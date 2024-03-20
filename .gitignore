@@ -1,3 +1,4 @@
 dataset/train/
 dataset/test/
 .idea/
+.DS_STORE
