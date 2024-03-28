@@ -101,6 +101,7 @@ def show_preprocessed_data(data):
 
 
 if __name__ == '__main__':
+    print(tf.config.list_physical_devices('GPU'))
     # show_classes_counts(TRAIN_DIR)
     show_classes_samples(TRAIN_DIR)
     # get_train_data_generator()
