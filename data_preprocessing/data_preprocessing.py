@@ -5,13 +5,27 @@ import random
 import tensorflow as tf
 import numpy as np
 from sklearn.utils.class_weight import compute_class_weight
+from keras.preprocessing.image import load_img, img_to_array, array_to_img
 
 
 TRAIN_DIR = '../dataset/train'
 TEST_DIR = '../dataset/test'
+PREPROCESSED_DIR = 'preprocessed_data'
+CLASSES_DIR = ['/angry', '/disgust', '/fear', '/happy', '/neutral', '/sad', '/surprise']
 IMAGE_SIZE = (48, 48)
 TARGET_IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 32
+
+EXPAND_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.1,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+
 
 TRAIN_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255,
@@ -27,6 +41,41 @@ TRAIN_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
 TEST_DATAGEN = test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255
 )
+
+
+def balance_dataset(data_dir: str, target_class_count: int = 8000):
+    new_data_dir = 'preprocessed_data'
+    os.makedirs(new_data_dir)
+    class_names = os.listdir(data_dir)
+
+    for class_index, class_name in enumerate(class_names):
+        os.makedirs(os.path.join(new_data_dir, class_name))
+        class_dir = os.path.join(data_dir, class_name)
+        images = os.listdir(class_dir)
+        class_images = []
+        images_to_add = target_class_count - len(images)
+        for image_name in images:
+            image_path = os.path.join(class_dir, image_name)
+            image = load_img(image_path, color_mode='rgb', target_size=TARGET_IMAGE_SIZE)
+            class_images.append(image)
+        if images_to_add > 0:
+            fill_array(class_images, images_to_add)
+        if images_to_add < 0:
+            class_images = class_images[:target_class_count]
+
+        for i, image in enumerate(class_images, 1):
+            image.save(f'{new_data_dir}/{class_name}/image{i}.jpg')
+
+
+def fill_array(array, images_to_add):
+    current_length = len(array)
+    for i in range(images_to_add):
+        image_to_copy = array[np.random.randint(0, current_length)]
+        image_to_copy = img_to_array(image_to_copy)
+        image_to_copy = np.expand_dims(image_to_copy, axis=0)
+        augmented_image = EXPAND_DATAGEN.flow(image_to_copy, batch_size=1)
+        array.append(array_to_img(next(augmented_image)[0]))
+        current_length += 1
 
 
 def show_classes_counts(data_dir: str):
@@ -101,8 +150,7 @@ def show_preprocessed_data(data):
 
 
 if __name__ == '__main__':
-    print(tf.config.list_physical_devices('GPU'))
-    # show_classes_counts(TRAIN_DIR)
-    show_classes_samples(TRAIN_DIR)
+    # show_classes_counts(PREPROCESSED_DIR)
+    show_classes_samples(PREPROCESSED_DIR)
     # get_train_data_generator()
-    show_preprocessed_data(get_train_data_preprocessed())
+    balance_dataset(TEST_DIR, target_class_count=1000)
