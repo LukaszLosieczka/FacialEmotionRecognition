@@ -5,7 +5,7 @@ import random
 import tensorflow as tf
 import numpy as np
 from sklearn.utils.class_weight import compute_class_weight
-from keras.preprocessing.image import load_img, img_to_array, array_to_img
+from keras.utils import load_img, img_to_array, array_to_img
 
 
 TRAIN_DIR = '../dataset/train'
@@ -153,4 +153,4 @@ if __name__ == '__main__':
     # show_classes_counts(PREPROCESSED_DIR)
     show_classes_samples(PREPROCESSED_DIR)
     # get_train_data_generator()
-    balance_dataset(TEST_DIR, target_class_count=1000)
+    # balance_dataset(TEST_DIR, target_class_count=1000)
