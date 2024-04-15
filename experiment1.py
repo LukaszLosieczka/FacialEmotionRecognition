@@ -42,7 +42,7 @@ def create_cnn_model(input_shape, num_classes):
     return model
 
 
-def train_model(train_data, val_data, use_class_weight=False, save_model=True):
+def train_model(train_data, val_data, use_class_weight=False):
     class_weight = dp.get_classes_weights(train_data)
     model = create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
     model.compile(optimizer='adam',
@@ -52,8 +52,7 @@ def train_model(train_data, val_data, use_class_weight=False, save_model=True):
                         class_weight=class_weight if use_class_weight else None)
     with open(f'{MODELS_PATH}/train_history.pkl', 'wb') as file:
         pickle.dump(history.history, file)
-    if save_model:
-        model.save(f'{MODELS_PATH}/model.h5')
+    return model
 
 
 def test_model(model, test_data, save_result=True):
@@ -106,7 +105,8 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        train_model(train_data, val_data, use_class_weight=use_weights, save_model=True)
+        model = train_model(train_data, val_data, use_class_weight=use_weights)
+        model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
 
 
 if __name__ == '__main__':
