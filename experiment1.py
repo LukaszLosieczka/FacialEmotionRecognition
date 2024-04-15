@@ -7,6 +7,7 @@ import sys
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import data_preprocessing as dp
 import tensorflow as tf
+from keras.applications import ResNet50V2
 
 MODELS_PATH = 'experiment1/models'
 RESULTS_PATH = 'experiment1/results'
@@ -42,9 +43,26 @@ def create_cnn_model(input_shape, num_classes):
     return model
 
 
+def create_pretrained_model(input_shape, num_classes):
+    base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=input_shape)
+    model = models.Sequential([
+        base_model,
+        layers.BatchNormalization(),
+        layers.GlobalAveragePooling2D(),
+        layers.Dense(512, activation='relu'),
+        layers.Dropout(0.1),
+        layers.Dense(256, activation='relu'),
+        layers.Dropout(0.1),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),
+        layers.Dense(num_classes, activation='softmax')
+    ])
+    return model
+
+
 def train_model(train_data, val_data, use_class_weight=False):
     class_weight = dp.get_classes_weights(train_data)
-    model = create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
+    model = create_pretrained_model(INPUT_SHAPE, NUM_CLASSES) #create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
     model.compile(optimizer='adam',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
