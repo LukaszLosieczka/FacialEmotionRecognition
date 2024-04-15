@@ -4,13 +4,15 @@ import matplotlib.pyplot as plt
 import random
 import tensorflow as tf
 import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 from keras.utils import load_img, img_to_array, array_to_img
 
 
 TRAIN_DIR = '../dataset/train'
 TEST_DIR = '../dataset/test'
-PREPROCESSED_DIR = 'preprocessed_data'
+BALANCED_DIR = 'preprocessed_data'
 CLASSES_DIR = ['/angry', '/disgust', '/fear', '/happy', '/neutral', '/sad', '/surprise']
 IMAGE_SIZE = (48, 48)
 TARGET_IMAGE_SIZE = (224, 224)
@@ -27,7 +29,7 @@ EXPAND_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
 )
 
 
-TRAIN_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
+AUGMENT_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255,
     rotation_range=40,
     width_shift_range=0.2,
@@ -38,7 +40,7 @@ TRAIN_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     fill_mode='nearest'
 )
 
-TEST_DATAGEN = test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+RESCALE_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255
 )
 
@@ -104,8 +106,18 @@ def show_classes_samples(data_dir: str):
     plt.show()
 
 
-def get_train_data_preprocessed():
-    return TRAIN_DATAGEN.flow_from_directory(
+def get_train_data_balanced_augmented():
+    return AUGMENT_DATAGEN.flow_from_directory(
+        BALANCED_DIR,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
+def get_train_data_augmented():
+    return AUGMENT_DATAGEN.flow_from_directory(
         TRAIN_DIR,
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
@@ -114,14 +126,52 @@ def get_train_data_preprocessed():
     )
 
 
-def get_test_data_preprocessed():
-    return TEST_DATAGEN.flow_from_directory(
-        TEST_DIR,
+def get_train_data_raw():
+    return RESCALE_DATAGEN.flow_from_directory(
+        TRAIN_DIR,
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
         class_mode='categorical',
         batch_size=BATCH_SIZE
     )
+
+
+def get_validation_and_test_data():
+    valid_df, test_df = split_test_data(0.5)
+    return RESCALE_DATAGEN.flow_from_dataframe(
+        valid_df,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    ), RESCALE_DATAGEN.flow_from_dataframe(
+        test_df,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
+def split_test_data(valid_size):
+    filepaths = []
+    labels = []
+
+    folds = os.listdir(TEST_DIR)
+    for fold in folds:
+        foldpath = os.path.join(TEST_DIR, fold)
+        filelist = os.listdir(foldpath)
+        for file in filelist:
+            fpath = os.path.join(foldpath, file)
+            filepaths.append(fpath)
+            labels.append(fold)
+
+    # Concatenate data paths with labels into one dataframe
+    Fseries = pd.Series(filepaths, name='filepaths')
+    Lseries = pd.Series(labels, name='labels')
+    test_dataframe = pd.concat([Fseries, Lseries], axis=1)
+
+    return train_test_split(test_dataframe, train_size=valid_size, shuffle=True, random_state=123)
 
 
 def get_classes_weights(data):
@@ -151,6 +201,6 @@ def show_preprocessed_data(data):
 
 if __name__ == '__main__':
     # show_classes_counts(PREPROCESSED_DIR)
-    show_classes_samples(PREPROCESSED_DIR)
+    show_classes_samples(BALANCED_DIR)
     # get_train_data_generator()
     # balance_dataset(TEST_DIR, target_class_count=1000)

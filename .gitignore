@@ -3,3 +3,5 @@ dataset/test/
 .idea/
 .DS_STORE
 data_preprocessing/preprocessed_data/
+experiment1/models/*
+experiment1/results/*
