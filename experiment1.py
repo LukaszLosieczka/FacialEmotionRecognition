@@ -14,7 +14,8 @@ RESULTS_PATH = 'experiment1/results'
 
 INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7
-EPOCHS = 10
+CNN = 'cnn'
+RESNET = 'resnet'
 
 
 def create_cnn_model(input_shape, num_classes):
@@ -60,13 +61,16 @@ def create_pretrained_model(input_shape, num_classes):
     return model
 
 
-def train_model(train_data, val_data, use_class_weight=False):
+def train_model(train_data, val_data, epochs, model_type, use_class_weight=False):
     class_weight = dp.get_classes_weights(train_data)
-    model = create_pretrained_model(INPUT_SHAPE, NUM_CLASSES) #create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
+    if model_type == CNN:
+        model = create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
+    else:
+        model = create_pretrained_model(INPUT_SHAPE, NUM_CLASSES)
     model.compile(optimizer='adam',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
-    history = model.fit(train_data, epochs=EPOCHS, validation_data=val_data,
+    history = model.fit(train_data, epochs=epochs, validation_data=val_data,
                         class_weight=class_weight if use_class_weight else None)
     with open(f'{MODELS_PATH}/train_history.pkl', 'wb') as file:
         pickle.dump(history.history, file)
@@ -119,9 +123,12 @@ def main(arguments):
         print("Using balanced and augmented training dataset")
         train_data = dp.get_train_data_balanced_augmented()
 
+    model_type = arguments[2]
+    epochs = int(arguments[3])
+
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        model = train_model(train_data, val_data, use_class_weight=use_weights)
+        model = train_model(train_data, val_data, epochs, model_type, use_class_weight=use_weights)
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
 
 

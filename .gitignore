@@ -4,4 +4,6 @@ dataset/test/
 .DS_STORE
 data_preprocessing/preprocessed_data/
 experiment1/models/*
+!experiment1/models/.gitkeep
 experiment1/results/*
+!experiment1/results/.gitkeep
