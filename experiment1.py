@@ -105,7 +105,8 @@ def main(arguments):
 
     if arguments[0].lower() == '--test':
         print('TESTING')
-        loaded_model = tf.keras.models.load_model(f'{MODELS_PATH}/model.h5')
+        model_name = arguments[1]
+        loaded_model = tf.keras.models.load_model(f'{MODELS_PATH}/{model_name}.h5')
         test_model(loaded_model, test_data, save_result=True)
         return
 
