@@ -79,7 +79,7 @@ def test_model(model, test_data, save_result=True):
 def main(arguments):
     train_data = []
     print('Loading validation and test data')
-    val_data, test_data = dp.get_validation_and_test_data()
+    test_data = dp.get_test_data()
 
     if arguments[0].lower() == '--test':
         print('TESTING')
@@ -105,7 +105,7 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        model = train_model(train_data, val_data, use_class_weight=use_weights)
+        model = train_model(train_data, test_data, use_class_weight=use_weights)
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
 
 

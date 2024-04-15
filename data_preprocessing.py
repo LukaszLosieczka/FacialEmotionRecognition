@@ -31,10 +31,10 @@ EXPAND_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
 
 AUGMENT_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255,
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
+    rotation_range=25,
+    width_shift_range=0.15,
+    height_shift_range=0.15,
+    shear_range=0.1,
     zoom_range=0.1,
     horizontal_flip=True,
     fill_mode='nearest'
@@ -155,6 +155,16 @@ def get_validation_and_test_data():
     )
 
 
+def get_test_data():
+    return RESCALE_DATAGEN.flow_from_directory(
+        TEST_DIR,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
 def split_test_data(valid_size):
     filepaths = []
     labels = []
@@ -203,6 +213,7 @@ def show_preprocessed_data(data):
 
 if __name__ == '__main__':
     # show_classes_counts(PREPROCESSED_DIR)
-    show_classes_samples(BALANCED_DIR)
+    # show_classes_samples(BALANCED_DIR)
     # get_train_data_generator()
+    print(get_classes_weights(get_validation_and_test_data()[0]))
     # balance_dataset(TEST_DIR, target_class_count=1000)
