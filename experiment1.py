@@ -97,7 +97,7 @@ def test_model(model, test_data, save_result=True):
 def main(arguments):
     train_data = []
     print('Loading validation and test data')
-    test_data = dp.get_test_data()
+    val_data, test_data = dp.get_validation_and_test_data()
 
     if arguments[0].lower() == '--test':
         print('TESTING')
@@ -109,21 +109,19 @@ def main(arguments):
     if arguments[1].lower() == 'raw':
         print("Using raw training dataset")
         train_data = dp.get_train_data_raw()
-    elif arguments[1].lower() == 'raw+weight':
-        print("Using raw training dataset with classes weight")
-        train_data = dp.get_train_data_raw()
-        use_weights = True
+    elif arguments[1].lower() == 'balanced':
+        print("Using balanced training dataset")
+        train_data = dp.get_train_data_balanced()
     elif arguments[1].lower() == 'augmented':
-        print("Using augmented training dataset with classes weight")
+        print("Using augmented training dataset")
         train_data = dp.get_train_data_augmented()
-        use_weights = True
     elif arguments[1].lower() == 'augmented+balanced':
         print("Using balanced and augmented training dataset")
         train_data = dp.get_train_data_balanced_augmented()
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        model = train_model(train_data, test_data, use_class_weight=use_weights)
+        model = train_model(train_data, val_data, use_class_weight=use_weights)
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
 
 

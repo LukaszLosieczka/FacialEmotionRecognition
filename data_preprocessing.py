@@ -116,6 +116,16 @@ def get_train_data_balanced_augmented():
     )
 
 
+def get_train_data_balanced():
+    return RESCALE_DATAGEN.flow_from_directory(
+        BALANCED_DIR,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
 def get_train_data_augmented():
     return AUGMENT_DATAGEN.flow_from_directory(
         TRAIN_DIR,
