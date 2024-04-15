@@ -140,12 +140,14 @@ def get_validation_and_test_data():
     valid_df, test_df = split_test_data(0.5)
     return RESCALE_DATAGEN.flow_from_dataframe(
         valid_df,
+        x_col='filepaths', y_col='labels',
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
         class_mode='categorical',
         batch_size=BATCH_SIZE
     ), RESCALE_DATAGEN.flow_from_dataframe(
         test_df,
+        x_col='filepaths', y_col='labels',
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
         class_mode='categorical',

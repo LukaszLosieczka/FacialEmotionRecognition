@@ -43,7 +43,7 @@ def create_cnn_model(input_shape, num_classes):
 
 
 def train_model(train_data, val_data, use_class_weight=False, save_model=True):
-    class_weight = dp.compute_class_weight(train_data)
+    class_weight = dp.get_classes_weights(train_data)
     model = create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
     model.compile(optimizer='adam',
                   loss='categorical_crossentropy',
