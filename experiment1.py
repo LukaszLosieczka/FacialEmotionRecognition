@@ -5,11 +5,11 @@ from keras import layers, models
 import numpy as np
 import sys
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
-from data_preprocessing import data_preprocessing as dp
+import data_preprocessing as dp
 import tensorflow as tf
 
-MODELS_PATH = 'models'
-RESULTS_PATH = 'results'
+MODELS_PATH = 'experiment1/models'
+RESULTS_PATH = 'experiment1/results'
 
 INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7

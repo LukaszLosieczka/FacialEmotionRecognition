@@ -10,9 +10,9 @@ from sklearn.utils.class_weight import compute_class_weight
 from keras.utils import load_img, img_to_array, array_to_img
 
 
-TRAIN_DIR = '../dataset/train'
-TEST_DIR = '../dataset/test'
-BALANCED_DIR = 'preprocessed_data'
+TRAIN_DIR = 'dataset/train'
+TEST_DIR = 'dataset/test'
+BALANCED_DIR = 'data_preprocessing/preprocessed_data'
 CLASSES_DIR = ['/angry', '/disgust', '/fear', '/happy', '/neutral', '/sad', '/surprise']
 IMAGE_SIZE = (48, 48)
 TARGET_IMAGE_SIZE = (224, 224)
@@ -46,7 +46,7 @@ RESCALE_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
 
 
 def balance_dataset(data_dir: str, target_class_count: int = 8000):
-    new_data_dir = 'preprocessed_data'
+    new_data_dir = 'data_preprocessing/preprocessed_data'
     os.makedirs(new_data_dir)
     class_names = os.listdir(data_dir)
 
