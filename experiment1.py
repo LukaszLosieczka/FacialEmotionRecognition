@@ -61,7 +61,7 @@ def create_pretrained_model(input_shape, num_classes):
     return model
 
 
-def train_model(train_data, val_data, epochs, model_type, use_class_weight=False):
+def train_model(train_data, data_name, val_data, epochs, model_type, use_class_weight=False):
     class_weight = dp.get_classes_weights(train_data)
     if model_type == CNN:
         model = create_cnn_model(INPUT_SHAPE, NUM_CLASSES)
@@ -72,12 +72,12 @@ def train_model(train_data, val_data, epochs, model_type, use_class_weight=False
                   metrics=['accuracy'])
     history = model.fit(train_data, epochs=epochs, validation_data=val_data,
                         class_weight=class_weight if use_class_weight else None)
-    with open(f'{MODELS_PATH}/train_history.pkl', 'wb') as file:
+    with open(f'{MODELS_PATH}/train_history_{data_name}.pkl', 'wb') as file:
         pickle.dump(history.history, file)
     return model
 
 
-def test_model(model, test_data, save_result=True):
+def test_model(model, test_data):
     y_pred = np.argmax(model.predict(test_data), axis=-1)  # Predict classes for test data
     y_true = np.argmax(test_data.labels, axis=-1)  # True labels for test data
     accuracy = accuracy_score(y_true, y_pred)
@@ -93,9 +93,7 @@ def test_model(model, test_data, save_result=True):
         "test_mcc": float(mcc)
     }
     print(result)
-    if save_result:
-        with open(f'{RESULTS_PATH}/test_results.json', 'w') as json_file:
-            json.dump(result, json_file)
+    return result
 
 
 def main(arguments):
@@ -107,7 +105,9 @@ def main(arguments):
         print('TESTING')
         model_name = arguments[1]
         loaded_model = tf.keras.models.load_model(f'{MODELS_PATH}/{model_name}.h5')
-        test_model(loaded_model, test_data, save_result=True)
+        result = test_model(loaded_model, test_data)
+        with open(f'{RESULTS_PATH}/test_results.json', 'w') as json_file:
+            json.dump(result, json_file)
         return
 
     use_weights = False
@@ -129,7 +129,7 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        model = train_model(train_data, val_data, epochs, model_type, use_class_weight=use_weights)
+        model = train_model(train_data, arguments[1], val_data, epochs, model_type, use_class_weight=use_weights)
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
 
 
