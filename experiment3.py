@@ -49,13 +49,13 @@ def train_dnn(base_model, train_data, val_data, epochs):
     with open(f'{MODELS_PATH}/train_history_dnn.pkl', 'wb') as file:
         pickle.dump(history.history, file)
     model.save(f'{MODELS_PATH}/model_dnn.h5')
+    return model
 
 
 def train_model(train_data, val_data, epochs, classifier):
     base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
     if classifier == DNN:
-        train_dnn(base_model, train_data, val_data, epochs)
-        return
+        return train_dnn(base_model, train_data, val_data, epochs)
     print("Extracting features...")
     train_features = extract_features(base_model, train_data)
     print("Finished extracting features")
@@ -68,6 +68,7 @@ def train_model(train_data, val_data, epochs, classifier):
     classifier.fit(train_features, train_labels)
     print("Training finished")
     dump(classifier, f'{MODELS_PATH}/model_{classifier}.pkl')
+    return classifier
 
 
 def test_model(model, test_data, is_dnn=False):
@@ -122,7 +123,8 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        train_model(train_data, val_data, epochs, classifier)
+        model = train_model(train_data, val_data, epochs, classifier)
+        test_model(model, test_data, is_dnn=classifier==DNN)
 
 
 if __name__ == '__main__':

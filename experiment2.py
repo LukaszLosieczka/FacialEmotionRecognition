@@ -143,6 +143,7 @@ def main(arguments):
         print('TRAINING')
         model = train_model(train_data, val_data, epochs, feature_extraction)
         model.save(f'{MODELS_PATH}/model_{arguments[2].lower()}.h5')
+        test_data(model, test_data, is_hog=feature_extraction==HOG)
 
 
 if __name__ == '__main__':

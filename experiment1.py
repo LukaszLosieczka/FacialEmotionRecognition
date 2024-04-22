@@ -131,6 +131,7 @@ def main(arguments):
         print('TRAINING')
         model = train_model(train_data, arguments[1], val_data, epochs, model_type, use_class_weight=use_weights)
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
+        test_model(model, test_data)
 
 
 if __name__ == '__main__':
