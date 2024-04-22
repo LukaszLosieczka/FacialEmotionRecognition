@@ -104,7 +104,7 @@ def main(arguments):
         model_name = arguments[1]
         is_dnn = len(arguments) == 3 and arguments[2] == '--dnn'
         if not is_dnn:
-            loaded_model = load(f'{model_name}.pkl')
+            loaded_model = load(f'{MODELS_PATH}/{model_name}.pkl')
         else:
             loaded_model = tf.keras.models.load_model(f'{MODELS_PATH}/{model_name}.h5')
         result = test_model(loaded_model, test_data, is_dnn=is_dnn)
