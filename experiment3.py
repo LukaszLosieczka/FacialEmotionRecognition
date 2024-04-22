@@ -52,22 +52,22 @@ def train_dnn(base_model, train_data, val_data, epochs):
     return model
 
 
-def train_model(train_data, val_data, epochs, classifier):
+def train_model(train_data, val_data, epochs, classifier_name):
     base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
-    if classifier == DNN:
+    if classifier_name == DNN:
         return train_dnn(base_model, train_data, val_data, epochs)
     print("Extracting features...")
     train_features = extract_features(base_model, train_data)
     print("Finished extracting features")
     train_labels = train_data.classes
-    if classifier == SVM:
+    if classifier_name == SVM:
         classifier = SVC()
     else:
         classifier = DecisionTreeClassifier()
     print("Training classifier...")
     classifier.fit(train_features, train_labels)
     print("Training finished")
-    dump(classifier, f'{MODELS_PATH}/model_{classifier}.pkl')
+    dump(classifier, f'{MODELS_PATH}/model_{classifier_name}.pkl')
     return classifier
 
 
@@ -118,13 +118,13 @@ def main(arguments):
     elif arguments[1].lower() == 'balanced':
         train_data = dp.get_train_data_balanced()
 
-    classifier = arguments[2].lower()
+    classifier_name = arguments[2].lower()
     epochs = int(arguments[3].lower())
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
-        model = train_model(train_data, val_data, epochs, classifier)
-        test_model(model, test_data, is_dnn=classifier==DNN)
+        model = train_model(train_data, val_data, epochs, classifier_name)
+        test_model(model, test_data, is_dnn=classifier_name == DNN)
 
 
 if __name__ == '__main__':
