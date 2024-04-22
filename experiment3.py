@@ -75,10 +75,10 @@ def test_model(model, test_data, is_dnn=False):
     if not is_dnn:
         base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
         features = extract_features(base_model, test_data)
-        y_pred = np.argmax(features, axis=-1)
+        y_pred = np.argmax(model.predict(features), axis=-1)
     else:
         y_pred = np.argmax(model.predict(test_data), axis=-1)
-    y_true = np.argmax(test_data.labels, axis=-1)
+    y_true = test_data.classes
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred, average='weighted')
     recall = recall_score(y_true, y_pred, average='weighted')

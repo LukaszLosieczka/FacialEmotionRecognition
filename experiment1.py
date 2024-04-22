@@ -79,7 +79,7 @@ def train_model(train_data, data_name, val_data, epochs, model_type, use_class_w
 
 def test_model(model, test_data):
     y_pred = np.argmax(model.predict(test_data), axis=-1)  # Predict classes for test data
-    y_true = np.argmax(test_data.labels, axis=-1)  # True labels for test data
+    y_true = test_data.classes
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred, average='weighted')
     recall = recall_score(y_true, y_pred, average='weighted')

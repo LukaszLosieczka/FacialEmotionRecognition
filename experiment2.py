@@ -99,7 +99,7 @@ def test_model(model, test_data, is_hog=False):
         y_true = np.argmax(y_test, axis=-1)
     else:
         y_pred = np.argmax(model.predict(test_data), axis=-1)  # Predict classes for test data
-        y_true = np.argmax(test_data.labels, axis=-1)  # True labels for test data
+        y_true = test_data.classes  # True labels for test data
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred, average='weighted')
     recall = recall_score(y_true, y_pred, average='weighted')
