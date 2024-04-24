@@ -19,10 +19,10 @@ TARGET_IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 32
 
 EXPAND_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
-    rotation_range=40,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
+    rotation_range=20,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
     zoom_range=0.1,
     horizontal_flip=True,
     fill_mode='nearest'
@@ -225,5 +225,5 @@ if __name__ == '__main__':
     # show_classes_counts(PREPROCESSED_DIR)
     # show_classes_samples(BALANCED_DIR)
     # get_train_data_generator()
-    print(get_classes_weights(get_validation_and_test_data()[0]))
-    # balance_dataset(TEST_DIR, target_class_count=1000)
+    # print(get_classes_weights(get_validation_and_test_data()[0]))
+    balance_dataset(TRAIN_DIR, target_class_count=4000)
