@@ -1,6 +1,8 @@
 import json
 import pickle
 import sys
+import time
+
 import cv2
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import numpy as np
@@ -141,9 +143,12 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
+        start_time = time.time()
         model = train_model(train_data, val_data, epochs, feature_extraction)
+        end_time = time.time()
+        print(f"Training time: {end_time - start_time} seconds")
         model.save(f'{MODELS_PATH}/model_{arguments[2].lower()}.h5')
-        test_data(model, test_data, is_hog=feature_extraction==HOG)
+        test_data(model, test_data, is_hog=feature_extraction == HOG)
 
 
 if __name__ == '__main__':

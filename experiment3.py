@@ -1,3 +1,5 @@
+import time
+
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import numpy as np
 import data_preprocessing as dp
@@ -123,7 +125,10 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
+        start_time = time.time()
         model = train_model(train_data, val_data, epochs, classifier_name)
+        end_time = time.time()
+        print(f"Training time: {end_time - start_time} seconds")
         test_model(model, test_data, is_dnn=classifier_name == DNN)
 
 

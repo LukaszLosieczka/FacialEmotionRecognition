@@ -1,5 +1,6 @@
 import json
 import pickle
+import time
 
 from keras import layers, models
 import numpy as np
@@ -129,7 +130,10 @@ def main(arguments):
 
     if arguments[0].lower() == '--train':
         print('TRAINING')
+        start_time = time.time()
         model = train_model(train_data, arguments[1], val_data, epochs, model_type, use_class_weight=use_weights)
+        end_time = time.time()
+        print(f"Training time: {end_time - start_time} seconds")
         model.save(f'{MODELS_PATH}/model_{arguments[1].lower()}.h5')
         test_model(model, test_data)
 
