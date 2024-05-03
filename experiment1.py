@@ -10,8 +10,8 @@ import data_preprocessing as dp
 import tensorflow as tf
 from keras.applications import ResNet50V2
 
-MODELS_PATH = 'experiment1/models'
-RESULTS_PATH = 'experiment1/results'
+MODELS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment1/models'
+RESULTS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment1/results'
 
 INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7

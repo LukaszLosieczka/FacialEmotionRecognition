@@ -15,8 +15,8 @@ from sklearn.tree import DecisionTreeClassifier
 from joblib import dump, load
 
 
-MODELS_PATH = 'experiment3/models'
-RESULTS_PATH = 'experiment3/results'
+MODELS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment3/models'
+RESULTS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment3/results'
 
 INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7

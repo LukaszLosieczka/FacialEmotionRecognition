@@ -12,8 +12,8 @@ from keras import layers, models
 
 from keras.applications import ResNet50V2, EfficientNetB0, VGG16
 
-MODELS_PATH = 'experiment2/models'
-RESULTS_PATH = 'experiment2/results'
+MODELS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment2/models'
+RESULTS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment2/results'
 
 RESNET = 'resnet'
 VGG = 'vgg16'
