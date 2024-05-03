@@ -148,7 +148,7 @@ def main(arguments):
         end_time = time.time()
         print(f"Training time: {end_time - start_time} seconds")
         model.save(f'{MODELS_PATH}/model_{arguments[2].lower()}.h5')
-        test_data(model, test_data, is_hog=feature_extraction == HOG)
+        test_model(model, test_data, is_hog=feature_extraction == HOG)
 
 
 if __name__ == '__main__':
