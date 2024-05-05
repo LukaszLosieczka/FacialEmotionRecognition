@@ -161,7 +161,8 @@ def get_validation_and_test_data():
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
         class_mode='categorical',
-        batch_size=BATCH_SIZE
+        batch_size=BATCH_SIZE,
+        shuffle=False
     )
 
 
@@ -171,7 +172,8 @@ def get_test_data():
         target_size=TARGET_IMAGE_SIZE,
         color_mode='rgb',
         class_mode='categorical',
-        batch_size=BATCH_SIZE
+        batch_size=BATCH_SIZE,
+        shuffle=False
     )
 
 
