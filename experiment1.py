@@ -107,7 +107,7 @@ def main(arguments):
         model_name = arguments[1]
         loaded_model = tf.keras.models.load_model(f'{MODELS_PATH}/{model_name}.h5')
         result = test_model(loaded_model, test_data)
-        with open(f'{RESULTS_PATH}/test_results.json', 'w') as json_file:
+        with open(f'{RESULTS_PATH}/test_results-{model_name}.json', 'w') as json_file:
             json.dump(result, json_file)
         return
 
