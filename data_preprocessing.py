@@ -19,11 +19,11 @@ TARGET_IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 32
 
 EXPAND_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
-    rotation_range=20,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    shear_range=0.1,
-    zoom_range=0.1,
+    rotation_range=5,
+    width_shift_range=0.01,
+    height_shift_range=0.01,
+    shear_range=0.01,
+    zoom_range=0.01,
     horizontal_flip=True,
     fill_mode='nearest'
 )
