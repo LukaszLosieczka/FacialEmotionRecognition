@@ -22,6 +22,7 @@ INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7
 BATCH_SIZE = 32
 
+SVM_LINEAR = 'svm-linear'
 SVM = 'svm'
 DT = 'decision_tree'
 DNN = 'dnn'
@@ -64,6 +65,8 @@ def train_model(train_data, val_data, epochs, classifier_name):
     train_labels = train_data.classes
     if classifier_name == SVM:
         classifier = SVC()
+    elif classifier_name == SVM_LINEAR:
+        classifier = SVC(kernel='linear')
     else:
         classifier = DecisionTreeClassifier()
     print("Training classifier...")
