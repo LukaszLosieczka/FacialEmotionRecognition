@@ -51,8 +51,12 @@ def train_model_with_hog(train_data, val_data, epochs):
     val_features, val_labels = transform_data_from_datagen(val_data)
     print("Features extracted!")
     model = models.Sequential([
-        layers.Dense(256, activation='relu', input_shape=(train_features.shape[1],)),
+        layers.Dense(512, activation='relu', input_shape=(train_features.shape[1],)),
+        layers.Dropout(0.1),
+        layers.Dense(256, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(NUM_CLASSES, activation='softmax')
     ])
 
@@ -81,8 +85,12 @@ def train_model(train_data, val_data, epochs, feature_extraction):
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
+        layers.Dense(512, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(256, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(NUM_CLASSES, activation='softmax')
     ])
     model.compile(optimizer='adam',

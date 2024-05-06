@@ -41,8 +41,12 @@ def train_dnn(base_model, train_data, val_data, epochs):
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
+        layers.Dense(512, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(256, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(128, activation='relu'),
+        layers.Dropout(0.1),
         layers.Dense(NUM_CLASSES, activation='softmax')
     ])
     model.compile(optimizer='adam',
