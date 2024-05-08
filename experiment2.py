@@ -10,7 +10,7 @@ import data_preprocessing as dp
 import tensorflow as tf
 from keras import layers, models
 
-from keras.applications import ResNet50V2, EfficientNetB0, VGG16
+from keras.applications import ResNet50V2, EfficientNetB7, VGG16
 
 MODELS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment2/models'
 RESULTS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment2/results'
@@ -80,7 +80,7 @@ def train_model(train_data, val_data, epochs, feature_extraction):
     elif feature_extraction == VGG:
         base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
     else:
-        base_model = EfficientNetB0(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
+        base_model = EfficientNetB7(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
 
     base_model.trainable = False
     model = models.Sequential([
