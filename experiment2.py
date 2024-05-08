@@ -82,6 +82,7 @@ def train_model(train_data, val_data, epochs, feature_extraction):
     else:
         base_model = EfficientNetB0(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
 
+    base_model.trainable = False
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
