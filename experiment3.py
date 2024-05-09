@@ -9,6 +9,7 @@ from keras import layers, models
 import json
 import pickle
 import sys
+from keras.models import Model
 from keras.applications import ResNet50V2, MobileNet
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -31,12 +32,11 @@ DNN = 'dnn'
 
 
 def extract_features(base_model, data):
-    vector = base_model.get_layer("reshape_2").output
-    feature_extractor = tf.keras.Model(base_model.input, vector)
+    x = layers.GlobalAveragePooling2D()(base_model.output)
+    model = Model(inputs=base_model.input, outputs=x)
     for layer in base_model.layers:
         layer.trainable = False
-    features = feature_extractor.predict(data, verbose=1)
-    print(features.shape)
+    features = model.predict(data, verbose=1)
     return features
 
 
@@ -65,7 +65,7 @@ def train_dnn(base_model, train_data, val_data, epochs):
 
 
 def train_model(train_data, val_data, epochs, classifier_name):
-    base_model = MobileNet(input_shape=INPUT_SHAPE, include_top=True)
+    base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
     if classifier_name == DNN:
         return train_dnn(base_model, train_data, val_data, epochs)
     print("Extracting features...")
@@ -89,7 +89,7 @@ def train_model(train_data, val_data, epochs, classifier_name):
 
 def test_model(model, test_data, is_dnn=False):
     if not is_dnn:
-        base_model = MobileNet(input_shape=INPUT_SHAPE, include_top=True)
+        base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
         features = extract_features(base_model, test_data)
         y_pred = model.predict(features)
     else:
