@@ -113,7 +113,7 @@ def test_model(model, test_data, is_dnn=False):
 
 def main(arguments):
     print('Loading validation and test data')
-    val_data, test_data = dp.get_validation_and_test_data_mobilenet()
+    val_data, test_data = dp.get_validation_and_test_data()
 
     if arguments[0].lower() == '--test':
         print('TESTING')
@@ -130,9 +130,9 @@ def main(arguments):
 
     train_data = []
     if arguments[1].lower() == 'raw':
-        train_data = dp.get_train_data_raw_mobilenet()
+        train_data = dp.get_train_data_raw()
     elif arguments[1].lower() == 'balanced':
-        train_data = dp.get_train_data_balanced_mobilenet()
+        train_data = dp.get_train_data_balanced()
 
     classifier_name = arguments[2].lower()
     epochs = int(arguments[3].lower())
