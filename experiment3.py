@@ -92,7 +92,7 @@ def train_model(train_data, val_data, epochs, classifier_name):
 
 def test_model(model, test_data, is_dnn=False):
     if not is_dnn:
-        base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
+        base_model = MobileNet(input_shape=INPUT_SHAPE, include_top=True)
         features = extract_features(base_model, test_data)
         y_pred = model.predict(features)
     else:
