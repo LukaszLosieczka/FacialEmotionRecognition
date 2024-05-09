@@ -11,7 +11,7 @@ import pickle
 import sys
 from keras.models import Model
 from keras.applications import ResNet50V2, MobileNet
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from joblib import dump, load
@@ -75,7 +75,7 @@ def train_model(train_data, val_data, epochs, classifier_name):
     if classifier_name == SVM:
         classifier = SVC()
     elif classifier_name == SVM_LINEAR:
-        classifier = SVC(kernel='linear')
+        classifier = LinearSVC()
     elif classifier_name == RF:
         classifier = RandomForestClassifier()
     else:
