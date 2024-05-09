@@ -9,9 +9,10 @@ import json
 import pickle
 import sys
 from keras.models import Model
-from keras.applications import VGG16
+from keras.applications import ResNet50V2
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from joblib import dump, load
 
 
@@ -25,6 +26,7 @@ BATCH_SIZE = 32
 SVM_LINEAR = 'svm-linear'
 SVM = 'svm'
 DT = 'decision_tree'
+RF = 'random_forest'
 DNN = 'dnn'
 
 
@@ -38,6 +40,8 @@ def extract_features(base_model, data):
 
 
 def train_dnn(base_model, train_data, val_data, epochs):
+    for layer in base_model.layers[:-4]:
+        layer.trainable = False
     model = models.Sequential([
         base_model,
         layers.GlobalAveragePooling2D(),
@@ -53,14 +57,14 @@ def train_dnn(base_model, train_data, val_data, epochs):
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     history = model.fit(train_data, epochs=epochs, validation_data=val_data)
-    with open(f'{MODELS_PATH}/train_history_dnn.pkl', 'wb') as file:
+    with open(f'{MODELS_PATH}/train_history_dnn_{epochs}.pkl', 'wb') as file:
         pickle.dump(history.history, file)
-    model.save(f'{MODELS_PATH}/model_dnn.h5')
+    model.save(f'{MODELS_PATH}/model_dnn_{epochs}.h5')
     return model
 
 
 def train_model(train_data, val_data, epochs, classifier_name):
-    base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
+    base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
     if classifier_name == DNN:
         return train_dnn(base_model, train_data, val_data, epochs)
     print("Extracting features...")
@@ -71,6 +75,8 @@ def train_model(train_data, val_data, epochs, classifier_name):
         classifier = SVC()
     elif classifier_name == SVM_LINEAR:
         classifier = SVC(kernel='linear')
+    elif classifier_name == RF:
+        classifier = RandomForestClassifier()
     else:
         classifier = DecisionTreeClassifier()
     print("Training classifier...")
@@ -82,7 +88,7 @@ def train_model(train_data, val_data, epochs, classifier_name):
 
 def test_model(model, test_data, is_dnn=False):
     if not is_dnn:
-        base_model = VGG16(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
+        base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
         features = extract_features(base_model, test_data)
         y_pred = model.predict(features)
     else:
