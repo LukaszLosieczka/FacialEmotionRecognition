@@ -2,6 +2,8 @@ import time
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
 import data_preprocessing as dp
 import tensorflow as tf
 from keras import layers, models
@@ -36,7 +38,9 @@ def extract_features(base_model, data):
     for layer in base_model.layers:
         layer.trainable = False
     features = model.predict(data, verbose=1)
-    return features
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    normalized_features = scaler.fit_transform(features)
+    return normalized_features
 
 
 def train_dnn(base_model, train_data, val_data, epochs):
