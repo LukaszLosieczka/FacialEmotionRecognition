@@ -8,12 +8,14 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 from keras.utils import load_img, img_to_array, array_to_img
+from keras.applications.mobilenet import preprocess_input
 
 
 TRAIN_DIR = 'dataset/train'
 TEST_DIR = 'dataset/test'
 BALANCED_DIR = 'data_preprocessing/preprocessed_data'
 CLASSES_DIR = ['/angry', '/disgust', '/fear', '/happy', '/neutral', '/sad', '/surprise']
+
 IMAGE_SIZE = (48, 48)
 TARGET_IMAGE_SIZE = (224, 224)
 BATCH_SIZE = 32
@@ -42,6 +44,10 @@ AUGMENT_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
 
 RESCALE_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1/255
+)
+
+MOBILENET_DATAGEN = tf.keras.preprocessing.image.ImageDataGenerator(
+    preprocessing_function=preprocess_input
 )
 
 
@@ -146,6 +152,26 @@ def get_train_data_raw():
     )
 
 
+def get_train_data_raw_mobilenet():
+    return MOBILENET_DATAGEN.flow_from_directory(
+        TRAIN_DIR,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
+def get_train_data_balanced_mobilenet():
+    return MOBILENET_DATAGEN.flow_from_directory(
+        BALANCED_DIR,
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    )
+
+
 def get_validation_and_test_data():
     valid_df, test_df = split_test_data(0.5)
     return RESCALE_DATAGEN.flow_from_dataframe(
@@ -156,6 +182,26 @@ def get_validation_and_test_data():
         class_mode='categorical',
         batch_size=BATCH_SIZE
     ), RESCALE_DATAGEN.flow_from_dataframe(
+        test_df,
+        x_col='filepaths', y_col='labels',
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE,
+        shuffle=False
+    )
+
+
+def get_validation_and_test_data_mobilenet():
+    valid_df, test_df = split_test_data(0.5)
+    return MOBILENET_DATAGEN.flow_from_dataframe(
+        valid_df,
+        x_col='filepaths', y_col='labels',
+        target_size=TARGET_IMAGE_SIZE,
+        color_mode='rgb',
+        class_mode='categorical',
+        batch_size=BATCH_SIZE
+    ), MOBILENET_DATAGEN.flow_from_dataframe(
         test_df,
         x_col='filepaths', y_col='labels',
         target_size=TARGET_IMAGE_SIZE,

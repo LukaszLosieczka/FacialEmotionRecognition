@@ -2,7 +2,6 @@ import time
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 
 import data_preprocessing as dp
 import tensorflow as tf
@@ -10,7 +9,6 @@ from keras import layers, models
 import json
 import pickle
 import sys
-from keras.models import Model
 from keras.applications import ResNet50V2, MobileNet
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -67,10 +65,9 @@ def train_dnn(base_model, train_data, val_data, epochs):
 
 
 def train_model(train_data, val_data, epochs, classifier_name):
-    base_model = ResNet50V2(include_top=False, weights='imagenet', input_shape=INPUT_SHAPE)
+    base_model = MobileNet(input_shape=INPUT_SHAPE, include_top=True)
     if classifier_name == DNN:
         return train_dnn(base_model, train_data, val_data, epochs)
-    base_model = MobileNet(input_shape=INPUT_SHAPE, include_top=True)
     print("Extracting features...")
     train_features = extract_features(base_model, train_data)
     print("Finished extracting features")
@@ -116,7 +113,7 @@ def test_model(model, test_data, is_dnn=False):
 
 def main(arguments):
     print('Loading validation and test data')
-    val_data, test_data = dp.get_validation_and_test_data()
+    val_data, test_data = dp.get_validation_and_test_data_mobilenet()
 
     if arguments[0].lower() == '--test':
         print('TESTING')
@@ -133,9 +130,9 @@ def main(arguments):
 
     train_data = []
     if arguments[1].lower() == 'raw':
-        train_data = dp.get_train_data_raw()
+        train_data = dp.get_train_data_raw_mobilenet()
     elif arguments[1].lower() == 'balanced':
-        train_data = dp.get_train_data_balanced()
+        train_data = dp.get_train_data_balanced_mobilenet()
 
     classifier_name = arguments[2].lower()
     epochs = int(arguments[3].lower())
