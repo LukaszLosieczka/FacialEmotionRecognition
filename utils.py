@@ -33,6 +33,6 @@ def analyze_train_history(train_history):
 
 
 if __name__ == '__main__':
-    with open('experiment1/models/train_history_balanced5.pkl', 'rb') as file:
+    with open('experiment1/models/train_history_raw.pkl', 'rb') as file:
         train_hist = pickle.load(file)
         analyze_train_history(train_hist)

@@ -7,12 +7,11 @@ import numpy as np
 import sys
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import data_preprocessing as dp
-import utils as ut
 import tensorflow as tf
 from keras.applications import ResNet50V2
 
-MODELS_PATH = 'experiment1/models'
-RESULTS_PATH = 'experiment1/results'
+MODELS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment1/models'
+RESULTS_PATH = '/content/drive/MyDrive/colab_env/FacialEmotionRecognition/experiment1/results'
 
 INPUT_SHAPE = (224, 224, 3)
 NUM_CLASSES = 7
@@ -82,8 +81,6 @@ def train_model(train_data, data_name, val_data, epochs, model_type, use_class_w
 def test_model(model, test_data):
     y_pred = np.argmax(model.predict(test_data), axis=-1)  # Predict classes for test data
     y_true = test_data.classes
-    classes = list(test_data.class_indices.keys())
-    ut.conf_matrix(y_true, y_pred, classes)
     accuracy = accuracy_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred, average='weighted')
     recall = recall_score(y_true, y_pred, average='weighted')
