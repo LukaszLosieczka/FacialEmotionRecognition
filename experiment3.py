@@ -59,9 +59,10 @@ def train_dnn(base_model, train_data, val_data, epochs):
     model.compile(optimizer=Adamax(learning_rate=0.0001),
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+    early_stopping = EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
     model_checkpoint = ModelCheckpoint(filepath=f'{MODELS_PATH}/model_dnn_{epochs}.h5',
                                        monitor='val_accuracy',
+                                       mode='max',
                                        save_best_only=True)
     history = model.fit(train_data, epochs=epochs, validation_data=val_data,
                         callbacks=[early_stopping, model_checkpoint])
