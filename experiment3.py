@@ -1,6 +1,7 @@
 import time
 
 from keras.src.callbacks import EarlyStopping, ModelCheckpoint
+from keras.src.optimizers import Adamax
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef
 import numpy as np
 
@@ -55,12 +56,12 @@ def train_dnn(base_model, train_data, val_data, epochs):
         layers.Dropout(0.1),
         layers.Dense(NUM_CLASSES, activation='softmax')
     ])
-    model.compile(optimizer='adam',
+    model.compile(optimizer=Adamax(learning_rate=0.0001),
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
     model_checkpoint = ModelCheckpoint(filepath=f'{MODELS_PATH}/model_dnn_{epochs}.h5',
-                                       monitor='val_loss',
+                                       monitor='val_accuracy',
                                        save_best_only=True)
     history = model.fit(train_data, epochs=epochs, validation_data=val_data,
                         callbacks=[early_stopping, model_checkpoint])
